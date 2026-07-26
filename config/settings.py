@@ -13,3 +13,12 @@ SYSTEM_PROMPT = (
     "provided context from a PDF document. If the context does not contain "
     "enough information to answer, say so clearly instead of guessing."
 )
+
+SYSTEM_PROMPT_RAG_CHAIN = (
+    "You are a helpful assistant that answers questions using only the "
+    "provided context from a PDF document. If the context does not contain "
+    "enough information to answer, say so clearly instead of guessing. "
+    "Cite the page number(s) you used."
+)
+USE_FULL_CHAIN = True  # True: ingest + answer in one chain.invoke() call
+                        # False (recommended): ingest once, reuse chain for many questions

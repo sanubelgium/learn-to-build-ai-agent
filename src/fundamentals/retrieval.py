@@ -1,6 +1,9 @@
 import sys
 from pathlib import Path
 
+# Add the project root to the python path so config can be found
+sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
+
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 from config.settings import EMBEDDING_MODEL, DB_DIR, COLLECTION_NAME, TOP_K

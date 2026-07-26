@@ -1,8 +1,7 @@
 # RAG Ingestion Pipeline
 
-=================================================================================
 RAG ingestion pipeline: PDF -> chunks -> embeddings -> vector store.
-=================================================================================
+
 Covers the "Ingestion" phase of the RAG diagram:
   PDF document -> Chunking -> Embedding model -> Vector store
 
@@ -23,9 +22,8 @@ Usage:
 
 # RAG Query & Retrieval Pipeline
 
-=================================================================================
 RAG query & retrieval pipeline: user query -> query embedding -> top-k chunks.
-=================================================================================
+
 Covers the "Query & retrieval" phase of the RAG diagram:
   User query -> Query embedding -> Retrieve top-k (similarity search)
 
@@ -38,9 +36,7 @@ Usage:
 
 # RAG Generation Pipeline
 
-========================================================================================
 RAG generation pipeline: retrieved chunks + query -> augmented prompt -> LLM -> answer
-========================================================================================
 
 Covers the "Generation" phase of the RAG diagram:
   Augmented prompt -> LLM -> Answer
@@ -60,4 +56,32 @@ Setup:
 
 Usage:
     python generate.py
+
+# LangChain LCEL Pipeline
+
+RAG pipeline as a single LangChain chain (LCEL), using local Ollama.
+
+Instead of manually gluing retrieve() -> build_prompt() -> generate_answer()
+like generate.py does, this wires everything into one LangChain "Runnable"
+using the pipe (|) operator:
+
+    retriever | format_docs  ->  prompt  ->  llm  ->  output parser
+
+Benefits over the manual version:
+  - One object (`chain`) you can .invoke() or .stream() instead of three
+    separate function calls to keep in sync.
+  - Swapping the LLM, retriever, or prompt is a one-line change.
+  - Streaming support comes for free via chain.stream(...).
+
+Reuses ingest.py's vector store (built with langchain-huggingface +
+langchain-chroma, no langchain-community involved).
+
+Install:
+    pip install langchain-core langchain-huggingface langchain-chroma langchain-ollama
+
+Setup: same as generate.py — Ollama running locally with a model pulled
+    (ollama pull llama3.1)
+
+Usage:
+    python combined_rag_chain.py
 

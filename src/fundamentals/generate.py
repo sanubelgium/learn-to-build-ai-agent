@@ -1,4 +1,12 @@
 import sys
+from pathlib import Path
+
+# Add the project root to the python path so config can be found
+sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
+
+# Add the current directory of the script to sys.path to find retrieval
+sys.path.append(str(Path(__file__).resolve().parent))
+
 import ollama
 from retrieval import retrieve, TOP_K
 from config.settings import MAX_TOKENS, MODEL, SYSTEM_PROMPT

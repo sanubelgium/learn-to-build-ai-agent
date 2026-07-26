@@ -2,6 +2,9 @@
 import sys
 from pathlib import Path
 
+# Add the project root to the python path so config can be found
+sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
+
 from pypdf import PdfReader
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
