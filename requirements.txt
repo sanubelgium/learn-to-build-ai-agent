@@ -1,0 +1,44 @@
+# --- Core ---
+python-dotenv==1.0.1
+pydantic==2.8.2
+pydantic-settings==2.4.0
+
+# --- LLM access ---
+ollama==0.3.1                # local LLM client (recommended default)
+#openai==1.40.0                # optional: OpenAI-compatible API (also works with many local servers)
+
+# --- PDF loading ---
+pypdf==4.3.1
+pdfplumber==0.11.4            # better table/layout extraction
+
+# --- Chunking ---
+langchain-text-splitters==0.2.2
+tiktoken==0.7.0                # token-aware chunking
+
+# --- Embeddings & reranking (local, no API key) ---
+sentence-transformers==3.0.1
+torch==2.12.1
+
+# --- Vector stores ---
+chromadb==0.5.5
+faiss-cpu==1.14.2
+
+# --- Hybrid search ---
+rank-bm25==0.2.2
+
+# --- App layer ---
+fastapi==0.112.1
+uvicorn[standard]==0.30.6
+streamlit==1.38.0
+
+# --- Phase 5: evaluation & observability ---
+ragas==0.1.16
+datasets==2.21.0
+
+# --- Phase 6: agents ---
+langgraph==0.2.20
+langchain==0.2.14
+langchain-community==0.2.12
+
+# --- Testing ---
+pytest==8.3.2
