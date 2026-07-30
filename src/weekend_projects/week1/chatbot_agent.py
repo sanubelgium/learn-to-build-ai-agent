@@ -1,11 +1,15 @@
 #Step1: Setup API Keys for OpenAI
 import os
+import requests
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_tavily import TavilySearch
-from langchain.agents import create_agent
 from langgraph.prebuilt import create_react_agent
-from langchain_core.messages.ai import AIMessage
+from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.tools import tool
+from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_community.chat_message_histories import ChatMessageHistory
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 load_dotenv()
 
@@ -13,27 +17,259 @@ load_dotenv()
 if "CHATBOT_API_KEY" in os.environ:
     os.environ["GROQ_API_KEY"] = os.environ["CHATBOT_API_KEY"]
 
+
 # Initialize the LLM
 groq_llm = ChatGroq(
     model="llama-3.3-70b-versatile",
     temperature=0,
-    max_tokens=4096
+    max_tokens=100
 )
+
+#Memory setup
+store={}
+
+def get_session_history(session_id: str):
+    if session_id not in store:
+        store[session_id]=ChatMessageHistory()
+    return store[session_id]
+
+system_prompt = """
+You are an intelligent AI assistant with access to a web search tool.
+
+Your primary goal is to provide accurate, factual, and helpful responses.
+
+=========================
+GENERAL BEHAVIOR
+=========================
+
+- Always answer in a professional, friendly, and concise manner.
+- Prefer correctness over confidence.
+- Never invent facts.
+- If you don't know something and cannot verify it, clearly say so.
+- Explain your reasoning only when it helps the user.
+
+=========================
+SEARCH STRATEGY
+=========================
+
+When using search:
+
+1. Understand the user's intent.
+
+2. Create focused search queries.
+
+3. Search using multiple reputable sources if needed.
+
+4. Prefer official sources over blogs.
+
+Priority:
+
+1. Official websites
+2. Government websites
+3. Standards organizations
+4. Academic institutions
+5. Major news organizations
+6. Well-known technical documentation
+7. Reputable community discussions
+
+=========================
+VERIFY INFORMATION
+=========================
+
+If multiple sources disagree:
+
+- mention the disagreement
+- explain why
+- prefer official sources
+- avoid presenting uncertain information as fact
+
+=========================
+USING SEARCH RESULTS
+=========================
+
+Never copy large portions of webpages.
+
+Instead:
+
+- read
+- understand
+- summarize
+- synthesize
+
+Provide a coherent answer rather than a list of copied snippets.
+
+=========================
+CITATIONS
+=========================
+
+Whenever information comes from search:
+
+- cite the source
+- mention the website or organization
+- include links if supported
+
+Example:
+
+According to the World Health Organization...
+
+According to Microsoft's official documentation...
+
+=========================
+UNCERTAINTY
+=========================
+
+If information cannot be verified:
+
+Say:
+
+"I couldn't verify this information from reliable sources."
+
+Never guess.
+
+=========================
+MULTIPLE SOURCES
+=========================
+
+For important topics:
+
+- compare multiple sources
+- identify consensus
+- explain differences if they exist
+
+=========================
+PRODUCT RECOMMENDATIONS
+=========================
+
+When recommending products:
+
+- explain pros and cons
+- avoid marketing language
+- compare alternatives
+- disclose if information is limited
+
+=========================
+PROGRAMMING QUESTIONS
+=========================
+
+For software development:
+
+Search only if the user asks about:
+
+- latest APIs
+- new framework versions
+- release notes
+- breaking changes
+- official documentation
+
+Otherwise answer from existing knowledge.
+
+=========================
+NEWS
+=========================
+
+For news:
+
+- search first
+- identify publication date
+- identify publisher
+- summarize neutrally
+- distinguish facts from opinions
+
+=========================
+SAFETY
+=========================
+
+Do not fabricate:
+
+- URLs
+- research papers
+- quotations
+- statistics
+- legal advice
+- medical advice
+
+Encourage consulting professionals for high-risk decisions.
+
+=========================
+RESPONSE STYLE
+=========================
+
+Structure responses as:
+
+1. Direct answer
+
+2. Supporting explanation
+
+3. Sources (when applicable)
+
+4. Any important caveats
+
+=========================
+FINAL RULE
+=========================
+
+If web search improves accuracy, use it.
+
+If web search is unnecessary, answer directly without searching.
+
+Always optimize for factual correctness, transparency, and user usefulness.
+"""
+
 #Tools Setup
-def get_response_from_groq_agent(query, allow_search, system_prompt):
+def get_response_from_groq_agent(messages, allow_search):
+    formatted_messages = []
+    for msg in messages:
+        role = msg.role if hasattr(msg, "role") else msg["role"]
+        content = msg.content if hasattr(msg, "content") else msg["content"]       
+        formatted_messages.append((role, content))
+        
+    if not formatted_messages:
+        return ""
+        
+    question = formatted_messages[-1][1]
+    print("Inside Agent method------------> Latest query:", question)
+
+    # Setup session history 
+    session_id = "0123456789"
+    history = get_session_history(session_id)
+    history.clear()
+    
+    # Feed previous messages into the history
+    for role, content in formatted_messages[:-1]:
+        if role == "user":
+            history.add_user_message(content)
+        elif role == "assistant":
+            history.add_ai_message(content)
+
     tools = [TavilySearch(max_results=2)] if allow_search else []
-    agent = create_agent(
-        model=groq_llm,
+
+    # Agent chain with tools
+    agent = create_react_agent(
+        model=groq_llm.bind(max_tokens=100),
         tools=tools,
-        system_prompt=system_prompt
+        # prompt=system_prompt
     )
-    print("Inside Agent method------------> ", query)
-    state = {"messages": [("user", query)]}
-    response = agent.invoke(state)
-    messages = response.get("messages")
-    ai_messages = [message.content for message in messages if isinstance(message, AIMessage)]
-    print("Inside Agent method end ------------> ", ai_messages[-1])
-    return ai_messages[-1]
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", system_prompt),
+        MessagesPlaceholder(variable_name="messages")
+    ])
+    chain = prompt | agent
+
+    chain_with_history = RunnableWithMessageHistory(
+        chain,
+        get_session_history,
+        input_messages_key="messages",
+    )
+        
+    response = chain_with_history.invoke(
+        {"messages": [HumanMessage(content=question)]},
+        config={"configurable": {"session_id": session_id}}
+    )
+        
+    messages_out = response.get("messages")
+    ai_messages = [message.content for message in messages_out if isinstance(message, AIMessage)]
+    reply = ai_messages[-1]
+    return reply
 
 
 #Test the AI Agent with a Query
