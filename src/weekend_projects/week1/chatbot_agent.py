@@ -27,11 +27,23 @@ groq_llm = ChatGroq(
 
 #Memory setup
 store={}
+long_term_store={}
 
 def get_session_history(session_id: str):
     if session_id not in store:
         store[session_id]=ChatMessageHistory()
     return store[session_id]
+
+def save_long_term_memory(session_id: str, input: str, output: str):
+    if session_id not in long_term_store:
+        long_term_store[session_id] = []
+    if len(input) > 20:  # Store inputs longer than 20 characters
+        long_term_store[session_id].append(f"User said: {input}")
+    if len(long_term_store[session_id]) > 5:  # Keep last 5 chats
+        long_term_store[session_id] = long_term_store[session_id][-5:]
+
+def get_long_term_memory(session_id: str):
+    return ". ".join(long_term_store.get(session_id, []))
 
 system_prompt = """
 You are an intelligent AI assistant with access to a web search tool.
@@ -251,6 +263,7 @@ def get_response_from_groq_agent(messages, allow_search):
     )
     prompt = ChatPromptTemplate.from_messages([
         ("system", system_prompt),
+        ("system", "Long-term memory: {long_term_memory}"),
         MessagesPlaceholder(variable_name="messages")
     ])
     chain = prompt | agent
@@ -262,12 +275,15 @@ def get_response_from_groq_agent(messages, allow_search):
     )
         
     response = chain_with_history.invoke(
-        {"messages": [HumanMessage(content=question)]},
+        {"messages": [HumanMessage(content=question)],"long_term_memory": get_long_term_memory(session_id)},
         config={"configurable": {"session_id": session_id}}
     )
+    save_long_term_memory(session_id, question, response['messages'][-1].content)
         
     messages_out = response.get("messages")
     ai_messages = [message.content for message in messages_out if isinstance(message, AIMessage)]
+    print("\nLong-term Memory:")
+    print(get_long_term_memory(session_id))
     reply = ai_messages[-1]
     return reply
 
