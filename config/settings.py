@@ -3,10 +3,13 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 PDF_PATH = str(PROJECT_ROOT / "data" / "raw_pdfs" / "budget_speech.pdf")
 DB_DIR = str(PROJECT_ROOT / "data" / "vectorstore")   
+RAG_PIPELINE_DIR = PROJECT_ROOT / "src" / "fundamentals" / "rag_pipeline"
 CHUNK_SIZE = 1000
 CHUNK_OVERLAP = 150
 COLLECTION_NAME = "my_first_collection"
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+DATASET_JSON = PROJECT_ROOT / "data" / "evaluation_dataset" / "rag_test_dataset.json"
+LANGSMITH_DATASET_NAME = "rag-budget-speech-eval-v1.1"
 TOP_K = 4
 MODEL = "llama-3.3-70b-versatile"
 MAX_TOKENS = 1000

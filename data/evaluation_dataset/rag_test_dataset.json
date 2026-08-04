@@ -1,0 +1,426 @@
+{
+  "metadata": {
+    "dataset_name": "rag_test_dataset",
+    "version": "1.0.0",
+    "source_document": "budget_speech.pdf",
+    "description": "Evaluation dataset for the RAG pipeline built on the Union Budget Speech 2026-2027 PDF[cite: 1]. Each entry contains a category, difficulty, question, ground-truth answer, and context reference placeholders to test RAG retrieval and generation capabilities.",
+    "pipeline_config": {
+      "embedding_model": "sentence-transformers/all-mpnet-base-v2",
+      "llm_model": "llama-3.3-70b-versatile",
+      "chunk_size": 1000,
+      "chunk_overlap": 150,
+      "collection_name": "my_first_collection",
+      "top_k": 5
+    },
+    "evaluation_metrics": [
+      "faithfulness",
+      "context_relevance",
+      "answer_correctness",
+      "answer_relevance"
+    ],
+    "total_samples": 25
+  },
+  "samples": [
+    {
+      "id": "q001",
+      "category": "vision_and_kartavya",
+      "difficulty": "easy",
+      "question": "What is Yuva Shakti and what are the 3 Kartavya mentioned in the budget speech?",
+      "ground_truth": "Yuva Shakti refers to the youth power inspiring the budget through ideas shared in the Viksit Bharat Young Leaders Dialogue 2026[cite: 1]. The '3 Kartavya' are:\n1. To accelerate and sustain economic growth by enhancing productivity, competitiveness, and resilience[cite: 1].\n2. To fulfil the aspirations of the people and build their capacity as partners in prosperity[cite: 1].\n3. To ensure every family, community, region, and sector has access to resources and opportunities (Sabka Sath, Sabka Vikas)[cite: 1].",
+      "reference_context": "Paragraphs 7-11 of Part A[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q002",
+      "category": "healthcare_and_biopharma",
+      "difficulty": "medium",
+      "question": "What is Biopharma SHAKTI and what are its key components and outlay?",
+      "ground_truth": "Biopharma SHAKTI (Strategy for Healthcare Advancement through Knowledge, Technology and Innovation) is proposed with an outlay of 10,000 crores over 5 years to build a domestic ecosystem for biologics and biosimilars[cite: 1]. Key components include:\n- Establishing 3 new National Institutes of Pharmaceutical Education and Research (NIPER) and upgrading 7 existing ones[cite: 1].\n- Creating a network of over 1,000 accredited Indian Clinical Trials sites[cite: 1].\n- Strengthening Central Drugs Standard Control Organisation (CDSCO) with a dedicated scientific review cadre[cite: 1].",
+      "reference_context": "Paragraph 16 of Part A[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q003",
+      "category": "electronics_and_semiconductors",
+      "difficulty": "medium",
+      "question": "What outlay revisions were announced for the Electronics Components Manufacturing Scheme and what is ISM 2.0?",
+      "ground_truth": "The outlay for the Electronics Components Manufacturing Scheme is proposed to be increased from 22,919 crore to 40,000 crore[cite: 1]. India Semiconductor Mission (ISM) 2.0 will be launched to produce equipment and materials, design full-stack Indian IP, fortify supply chains, and establish industry-led research/training centres[cite: 1].",
+      "reference_context": "Paragraphs 17-18 of Part A[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q004",
+      "category": "mining_and_minerals",
+      "difficulty": "easy",
+      "question": "Which states are selected to establish dedicated Rare Earth Corridors?",
+      "ground_truth": "The mineral-rich states of Odisha, Kerala, Andhra Pradesh, and Tamil Nadu are proposed to establish dedicated Rare Earth Corridors to promote mining, processing, research, and manufacturing[cite: 1].",
+      "reference_context": "Paragraph 19 of Part A[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q005",
+      "category": "manufacturing_and_logistics",
+      "difficulty": "medium",
+      "question": "What are the proposals for High-Tech Tool Rooms and Container Manufacturing?",
+      "ground_truth": "1. Hi-Tech Tool Rooms will be established by CPSEs at 2 locations as automated service bureaus to locally design, test, and manufacture high-precision components at scale[cite: 1].\n2. A Scheme for Container Manufacturing is proposed with a budgetary allocation of 10,000 crore over a 5-year period to build a competitive manufacturing ecosystem[cite: 1].",
+      "reference_context": "Paragraph 21 of Part A[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q006",
+      "category": "textiles",
+      "difficulty": "medium",
+      "question": "What are the five sub-parts of the Integrated Programme proposed for the Textile Sector?",
+      "ground_truth": "The five sub-parts are:\n1. National Fibre Scheme for natural, man-made, and new-age fibres[cite: 1].\n2. Textile Expansion and Employment Scheme to modernise traditional clusters[cite: 1].\n3. National Handloom and Handicraft programme for targeted support to weavers and artisans[cite: 1].\n4. Tex-Eco Initiative to promote sustainable textiles[cite: 1].\n5. Samarth 2.0 to upgrade the textile skilling ecosystem[cite: 1].",
+      "reference_context": "Paragraph 22 of Part A[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q007",
+      "category": "msme",
+      "difficulty": "easy",
+      "question": "What fund allocations are proposed for equity support to SMEs and micro enterprises?",
+      "ground_truth": "A dedicated 10,000 crore SME Growth Fund is proposed to create future Champions[cite: 1]. Additionally, the Self-Reliant India Fund set up in 2021 will be topped up with 2,000 crore to maintain risk capital access for micro enterprises[cite: 1].",
+      "reference_context": "Paragraphs 28-29 of Part A[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q008",
+      "category": "msme_liquidity",
+      "difficulty": "hard",
+      "question": "What four liquidity measures have been proposed using TReDS for MSMEs?",
+      "ground_truth": "1. Mandating TReDS as the transaction settlement platform for all CPSE purchases from MSMEs[cite: 1].\n2. Introducing a credit guarantee support mechanism through CGTMSE for invoice discounting on TReDS[cite: 1].\n3. Linking GeM with TReDS for sharing government purchase information with financiers[cite: 1].\n4. Introducing TReDS receivables as asset-backed securities to develop a secondary market[cite: 1].",
+      "reference_context": "Paragraph 30 of Part A[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q009",
+      "category": "professional_support",
+      "difficulty": "easy",
+      "question": "What is the concept of 'Corporate Mitras' mentioned in the budget?",
+      "ground_truth": "'Corporate Mitras' are accredited para-professionals trained through short-term, modular courses designed by ICAI, ICSI, and ICMAI in Tier-II and Tier-III towns to help MSMEs meet compliance requirements at affordable costs[cite: 1].",
+      "reference_context": "Paragraph 31 of Part A[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q010",
+      "category": "infrastructure_capex",
+      "difficulty": "easy",
+      "question": "What is the proposed public capital expenditure (capex) allocation for FY 2026-27?",
+      "ground_truth": "The public capital expenditure is proposed to increase to 12.2 lakh crore in FY 2026-27, up from an allocation of 11.2 lakh crore in BE 2025-26[cite: 1].",
+      "reference_context": "Paragraph 33 of Part A[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q011",
+      "category": "transportation_and_waterways",
+      "difficulty": "medium",
+      "question": "What are the key initiatives announced for inland waterways and coastal shipping?",
+      "ground_truth": "- Operationalising 20 new National Waterways over 5 years, starting with NW-5 in Odisha (connecting Talcher/Angul to Paradeep and Dhamra ports)[cite: 1].\n- Establishing ship repair ecosystems at Varanasi and Patna[cite: 1].\n- Launching a Coastal Cargo Promotion Scheme to increase inland waterways and coastal shipping share from 6% to 12% by 2047[cite: 1].",
+      "reference_context": "Paragraph 36 of Part A[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q012",
+      "category": "railways_and_speed_rail",
+      "difficulty": "medium",
+      "question": "Which seven High-Speed Rail corridors are proposed as 'growth connectors'?",
+      "ground_truth": "The seven corridors are:\n1. Mumbai-Pune\n2. Pune-Hyderabad\n3. Hyderabad-Bengaluru\n4. Hyderabad-Chennai\n5. Chennai-Bengaluru\n6. Delhi-Varanasi\n7. Varanasi-Siliguri[cite: 1].",
+      "reference_context": "Paragraph 40 of Part A[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q013",
+      "category": "financial_sector",
+      "difficulty": "easy",
+      "question": "What committee is proposed to be formed for banking sector reforms?",
+      "ground_truth": "A 'High Level Committee on Banking for Viksit Bharat' is proposed to comprehensively review the banking sector and align it with India's next growth phase while ensuring financial stability and consumer protection[cite: 1].",
+      "reference_context": "Paragraph 42 of Part A[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q014",
+      "category": "foreign_investment",
+      "difficulty": "medium",
+      "question": "What revisions were made to the investment limits for Persons Resident Outside India (PROI) under the Portfolio Investment Scheme?",
+      "ground_truth": "The investment limit for an individual PROI under the Portfolio Investment Scheme is increased from 5% to 10%, and the overall investment limit for all individual PROIs is increased from 10% to 24%[cite: 1].",
+      "reference_context": "Paragraph 47 of Part A[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q015",
+      "category": "education_and_services",
+      "difficulty": "medium",
+      "question": "What standing committee is proposed for the services sector and what is its target share by 2047?",
+      "ground_truth": "A High-Powered 'Education to Employment and Enterprise' Standing Committee is proposed to recommend measures to make India a global leader in services, targeting a 10% global share by 2047[cite: 1].",
+      "reference_context": "Paragraph 51 of Part A[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q016",
+      "category": "healthcare_workforce",
+      "difficulty": "medium",
+      "question": "How many Allied Health Professionals (AHPs) and multiskilled caregivers does the government aim to train?",
+      "ground_truth": "The government aims to add 100,000 Allied Health Professionals (AHPs) over the next 5 years across 10 selected disciplines[cite: 1], and train 1.5 lakh multiskilled caregivers in the coming year[cite: 1].",
+      "reference_context": "Paragraphs 53-54 of Part A[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q017",
+      "category": "ayush",
+      "difficulty": "easy",
+      "question": "What measures are announced to strengthen the AYUSH sector?",
+      "ground_truth": "1. Setting up 3 new All India Institutes of Ayurveda[cite: 1].\n2. Upgrading AYUSH pharmacies and Drug Testing Labs[cite: 1].\n3. Upgrading the WHO Global Traditional Medicine Centre in Jamnagar for evidence-based research[cite: 1].",
+      "reference_context": "Paragraph 58 of Part A[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q018",
+      "category": "agriculture_schemes",
+      "difficulty": "hard",
+      "question": "What is Bharat-VISTAAR and how does it leverage AI for agriculture?",
+      "ground_truth": "Bharat-VISTAAR (Virtually Integrated System to Access Agricultural Resources) is a multilingual AI tool that integrates AgriStack portals and ICAR package on agricultural practices with AI systems to provide customized advisory support, enhance farm productivity, and reduce risk for farmers[cite: 1].",
+      "reference_context": "Paragraph 83 of Part A[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q019",
+      "category": "women_empowerment",
+      "difficulty": "easy",
+      "question": "What are SHE-Marts announced in the budget speech?",
+      "ground_truth": "SHE (Self-Help Entrepreneur) Marts are community-owned retail outlets set up within cluster-level federations to support women from Self-Help Groups in transitioning from credit-led livelihoods to business owners[cite: 1].",
+      "reference_context": "Paragraph 84 of Part A[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q020",
+      "category": "fiscal_stats",
+      "difficulty": "hard",
+      "question": "What are the fiscal deficit targets and estimated debt-to-GDP ratio for FY 2026-27?",
+      "ground_truth": "- Fiscal deficit for BE 2026-27 is estimated at 4.3 percent of GDP (down from 4.4 percent in RE 2025-26)[cite: 1].\n- Debt-to-GDP ratio is estimated to be 55.6 percent of GDP in BE 2026-27 (down from 56.1 percent in RE 2025-26)[cite: 1].",
+      "reference_context": "Paragraphs 93-94 of Part A[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q021",
+      "category": "direct_tax_schemes",
+      "difficulty": "hard",
+      "question": "Explain the two categories under the Foreign Assets of Small Taxpayers Disclosure Scheme (FAST DS), 2026.",
+      "ground_truth": "FAST DS 2026 is a one-time 6-month foreign asset disclosure scheme[cite: 1]:\n- Category A (taxpayers who did not disclose overseas income/asset up to 1 crore rupees): Pay 30% tax + 30% additional tax in lieu of penalty to get immunity from prosecution[cite: 1].\n- Category B (taxpayers who paid due tax/disclosed income but failed to declare asset up to 5 crore rupees): Get immunity from penalty and prosecution by paying a fee of 1 lakh rupees[cite: 1].",
+      "reference_context": "Paragraphs 111-112 of Part B and Annexure to Part B[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q022",
+      "category": "corporate_tax_and_mat",
+      "difficulty": "hard",
+      "question": "What changes have been proposed regarding Minimum Alternate Tax (MAT) rates and set-off credit?",
+      "ground_truth": "MAT is proposed to become a final tax with its rate reduced from 15% to 14%, ending future credit accumulation starting April 1, 2026[cite: 1]. Brought-forward MAT credit accumulated up to March 31, 2026 will be available for set-off only to domestic companies shifting to the new tax regime, up to 25% of their tax liability per year[cite: 1].",
+      "reference_context": "Paragraphs 142-143 of Part B and Annexure to Part B[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q023",
+      "category": "indirect_taxes_and_customs",
+      "difficulty": "easy",
+      "question": "What customs duty exemption has been granted to personal imports for medical treatment?",
+      "ground_truth": "Basic customs duty has been completely exempted on 17 drugs/medicines, and 7 more rare diseases have been added to the exemption list for personal imports of drugs, medicines, and Food for Special Medical Purposes (FSMP)[cite: 1]. Personal import tariff rates on Chapter heading 9804 were also reduced from 20% to 10%[cite: 1].",
+      "reference_context": "Paragraphs 159-161 of Part B and Customs Rate Table[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q024",
+      "category": "e_commerce_and_exports",
+      "difficulty": "medium",
+      "question": "What major change was announced regarding value caps on courier exports?",
+      "ground_truth": "The budget announced the complete removal of the current value cap of 10 lakh per consignment on courier exports to boost global market access for small businesses, artisans, and start-ups[cite: 1].",
+      "reference_context": "Paragraph 175 of Part B and Annexure to Part B[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      }
+    },
+    {
+      "id": "q025",
+      "category": "out_of_scope",
+      "difficulty": "easy",
+      "question": "What are the specific tax exemption slabs for cryptocurrency trades under GST mentioned in the budget speech?",
+      "ground_truth": "This information is not present in the budget speech document[cite: 1]. The document only mentions direct tax penalty provisions for non-furnishing of statements on crypto-asset transactions (Rs. 200/day and Rs. 50,000 fine)[cite: 1], but does not mention GST exemption slabs for cryptocurrency trades[cite: 1]. The RAG system should refuse to answer based on unmentioned context.",
+      "reference_context": "Annexure to Part B (Direct Taxes - Crypto Assets)[cite: 1].",
+      "retrieved_contexts": [],
+      "llm_answer": "",
+      "scores": {
+        "faithfulness": null,
+        "context_relevance": null,
+        "answer_correctness": null,
+        "answer_relevance": null
+      },
+      "notes": "Out-of-scope question to test pipeline hallucination resistance."
+    }
+  ]
+}

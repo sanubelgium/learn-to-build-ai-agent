@@ -21,70 +21,76 @@ load_dotenv()
 if "CHATBOT_API_KEY" in os.environ:
     os.environ["GROQ_API_KEY"] = os.environ["CHATBOT_API_KEY"]
 
-###Embeddings model
-embeddings = HuggingFaceEmbeddings(
-    model_name="sentence-transformers/all-mpnet-base-v2",
-    encode_kwargs={"normalize_embeddings": True},
-)
-###Chunks Created
-pages = [
-        Document(page_content=page.extract_text() or "", metadata={"source": PDF_PATH, "page": i})
-        for i, page in enumerate(PdfReader(PDF_PATH).pages)
-    ]
-splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=150)
-chunks = splitter.split_documents(pages)
-###Embeddings of chunks
-embedding_chunks = embeddings.embed_documents([doc.page_content for doc in chunks])
-###print("doc_result", embedding_chunks)
-###print("number of chunks", len(embedding_chunks))
 
-###Store in vector store
-client = chromadb.PersistentClient(path=DB_DIR)
-try:
-    client.delete_collection(COLLECTION_NAME)
-except Exception:
-    pass
-collection = client.get_or_create_collection(COLLECTION_NAME)
-collection.add(
-    ids=[str(uuid.uuid4()) for _ in chunks],
-    documents=[doc.page_content for doc in chunks],
-    embeddings=embedding_chunks,
-    metadatas=[doc.metadata for doc in chunks]
-)
-###print("collection", collection.get())
-###query vector
-query = "what is YUva shakti and 3 kartavya?"
-query_embedding = embeddings.embed_query(query)
-results = collection.query(
-    query_embeddings=[query_embedding],
-    n_results=5
-)
-###Context Retreived
-docs = results["documents"][0]
-metas = results["metadatas"][0]
-context_lines = []
-for d, m in zip(docs, metas):
-    page = m.get("page", "?")
-    context_lines.append(f"[page {page}]\n{d.strip()}")
-context = "\n\n".join(context_lines)
-###print("context", context)
+def rag_pipeline_design(query):
+    client = chromadb.PersistentClient(path=DB_DIR)
+    collection = client.get_or_create_collection(COLLECTION_NAME)
+    ###Embeddings model
+    embeddings = HuggingFaceEmbeddings(
+        model_name="sentence-transformers/all-mpnet-base-v2",
+        encode_kwargs={"normalize_embeddings": True},
+    )
+    if collection.count() == 0:
+        ###Chunks Created
+        pages = [
+            Document(page_content=page.extract_text() or "", metadata={"source": PDF_PATH, "page": i})
+            for i, page in enumerate(PdfReader(PDF_PATH).pages)
+        ]
+        splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=150)
+        chunks = splitter.split_documents(pages)
+        ###Embeddings of chunks
+        embedding_chunks = embeddings.embed_documents([doc.page_content for doc in chunks])
 
-### Prompt construction:
-prompt = ChatPromptTemplate.from_template(
-    """You are a helpful assistant answering questions using only the provided context. If the context does not contain the answer, say so plainly instead of guessing. 
-    Context: {context} 
-    Question: {question}
-    Answer:"""
-)   
-###print("prompt", prompt)
+        ###Store chunks
+        collection.add(
+            ids=[str(uuid.uuid4()) for _ in chunks],
+            documents=[doc.page_content for doc in chunks],
+            embeddings=embedding_chunks,
+            metadatas=[doc.metadata for doc in chunks]
+        )
+        print(f"[ingest] Embedded and stored {len(chunks)} chunks into '{COLLECTION_NAME}'.")
+    else:
+        print(f"[ingest] Collection '{COLLECTION_NAME}' already has {collection.count()} chunks — skipping ingestion.")  
+    ###query vector
+    query_embedding = embeddings.embed_query(query)
+    results = collection.query(
+        query_embeddings=[query_embedding],
+        n_results=5
+    )
+    ###Context Retreived
+    docs = results["documents"][0]
+    metas = results["metadatas"][0]
+    context_lines = []
+    for d, m in zip(docs, metas):
+        page = m.get("page", "?")
+        context_lines.append(f"[page {page}]\n{d.strip()}")
+    context = "\n\n".join(context_lines)
+    ###print("context", context)
 
-# Initialize the LLM
-groq_llm = ChatGroq(
-    model="llama-3.3-70b-versatile",
-    temperature=0
-)
-chain = prompt | groq_llm
-respone = chain.invoke({"context": context, "question": query})
-###print("context", context)
-# Format and print the final answer
-print("\n\nAnswer:", respone.content)
+    ### Prompt construction:
+    prompt = ChatPromptTemplate.from_template(
+        """You are a helpful assistant answering questions using only the provided context. If the context does not contain the answer, say so plainly instead of guessing. 
+        Context: {context} 
+        Question: {question}
+        Answer:"""
+    )   
+    ###print("prompt", prompt)
+
+    # Initialize the LLM
+    groq_llm = ChatGroq(
+        model="llama-3.3-70b-versatile",
+        temperature=0
+    )
+    chain = prompt | groq_llm
+    response = chain.invoke({"context": context, "question": query})
+    # Return structured dict so callers (evaluators) get answer + retrieved chunks
+    return {
+        "answer": response.content,
+        "retrieved_contexts": docs,
+        "question": query,
+    }
+
+if __name__ == "__main__":
+    query = "what is YUva shakti and 3 kartavya?"
+    result = rag_pipeline_design(query)
+    print("\n\nAnswer:", result["answer"])
