@@ -1,5 +1,5 @@
 from langgraph.graph import StateGraph, START, END
-from typing import TypedDict, Literal
+from typing import TypedDict, Literal, Annotated
 from pydantic import BaseModel, Field
 from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage
@@ -34,6 +34,9 @@ class PostState(TypedDict):
     feedback:str
     iteration:int
     max_iterations:int
+    post_history:Annotated[list[str],operator.add]
+    feedback_history:Annotated[list[str],operator.add]
+
 #Schema
 class EvaluationSchema(BaseModel):
     evaluation:Literal["Approved","Not Approved"] = Field(..., description="Evaluation of the post")
@@ -57,7 +60,7 @@ def generate_post(state:PostState) -> PostState:
     """)
     ]
     generated_post = generator_model.invoke(generation_messages).content
-    return {"post": generated_post}
+    return {"post": generated_post,"post_history":[generated_post]}
 
 #evaluatio node    
 def evaluate_post(state:PostState) -> PostState:
@@ -88,7 +91,7 @@ Auto-reject if:
 """)
 ]
     evaluation_response = structured_evaluator_model.invoke(evaluation_messages)
-    return {"evaluation": evaluation_response.evaluation, "feedback": evaluation_response.feedback}
+    return {"evaluation": evaluation_response.evaluation, "feedback": evaluation_response.feedback,"feedback_history":[evaluation_response.feedback]}
 
 #optimization node
 def optimize_post(state:PostState) -> PostState:
@@ -107,7 +110,7 @@ Re-write it as a short, viral-worthy tweet. Avoid Q&A style and stay under 280 c
 ]
     optimized_post = optimizer_model.invoke(optimization_messages).content
     iteration = state["iteration"] + 1
-    return {"post": optimized_post, "iteration": iteration}
+    return {"post": optimized_post, "iteration": iteration, "post_history":[optimized_post]}
     
 
 
@@ -134,14 +137,11 @@ post_graph.add_edge("optimize_post", "evaluate_post")
 post_workflow = post_graph.compile()
 #execute
 initial_state = {
-    "topic": "The Future of AI in Healthcare",
+    "topic": "Generate a weak topic",
     "iteration":1,
     "max_iterations": 3
 }
 output = post_workflow.invoke(initial_state)
 print(output)
-
-
-
 
 
