@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 from langchain_groq import ChatGroq
 from langchain_core.messages import BaseMessage, HumanMessage
 from langgraph.graph.message import add_messages
+from langgraph.checkpoint.memory import MemorySaver
 import os
 import operator
 from dotenv import load_dotenv
@@ -27,7 +28,8 @@ def chat_node(state:ChatState) -> ChatState:
     query = state["conversations"]
     response = chat_model.invoke(query)
     return {"conversations":[response]}
-
+#checkpoint
+checkpoint=MemorySaver()
 #graph
 chatbot_graph = StateGraph(ChatState)
 
@@ -38,13 +40,15 @@ chatbot_graph.add_node("chat_node",chat_node)
 chatbot_graph.add_edge(START,"chat_node")
 chatbot_graph.add_edge("chat_node",END)
 #compile
-chatbot_workflow = chatbot_graph.compile()
+chatbot_workflow = chatbot_graph.compile(checkpointer=checkpoint)
 #execute
+thread_id = "1"
 while True:
     user_message=input("User: ")
     if user_message.strip().lower() in ["exit","bye"]:
         print("Exiting Chatbot...")
         break
     initial_state = {"conversations": [HumanMessage(content=user_message)]}
-    output = chatbot_workflow.invoke(initial_state)
-    print(output["conversations"][-1].content)
+    config={"configurable":{"thread_id":thread_id}}  # This is for persistance 
+    output = chatbot_workflow.invoke(initial_state,config=config)
+    print("AI : ",output["conversations"][-1].content)
