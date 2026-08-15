@@ -216,3 +216,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+data/vectorstore/
+data/vectorstore/chroma.sqlite3
+data/vectorstore/dc61552b-2196-4b02-b782-a23c433b6826/data_level0.bin
+data/vectorstore/dc61552b-2196-4b02-b782-a23c433b6826/header.bin
+data/vectorstore/dc61552b-2196-4b02-b782-a23c433b6826/length.bin
+data/vectorstore/dc61552b-2196-4b02-b782-a23c433b6826/link_lists.bin
+requirements_chatbot.txt
+src/weekend_projects/week1/architecture_doc/week_1_architecture.png
+.gitignore
+src/chatbot_langgraph/converstaion_history.db
+src/chatbot_langgraph/converstaion_history.db-shm
+src/chatbot_langgraph/converstaion_history.db-wal

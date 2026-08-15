@@ -1,5 +1,6 @@
 import streamlit as st
-from chatbot_using_langgraph import chatbot_workflow
+#from chatbot_using_langgraph import chatbot_workflow
+from chatbot_in_langgraph_with_database import chatbot_workflow, find_all_thread_ids
 from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage
 import uuid
@@ -31,7 +32,7 @@ if "chat_history" not in st.session_state:
 if "thread_id" not in st.session_state:
     st.session_state['thread_id'] = generate_thread_id()
 if "all_threads" not in st.session_state:
-    st.session_state['all_threads'] = [st.session_state['thread_id']]
+    st.session_state['all_threads'] = find_all_thread_ids()
 if "conversation" not in st.session_state:
     st.session_state['conversation'] = []
 if "selected_thread_id" not in st.session_state:
