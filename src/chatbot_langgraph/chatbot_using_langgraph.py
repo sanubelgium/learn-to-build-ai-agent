@@ -41,14 +41,3 @@ chatbot_graph.add_edge(START,"chat_node")
 chatbot_graph.add_edge("chat_node",END)
 #compile
 chatbot_workflow = chatbot_graph.compile(checkpointer=checkpoint)
-#execute
-thread_id = "1"
-while True:
-    user_message=input("User: ")
-    if user_message.strip().lower() in ["exit","bye"]:
-        print("Exiting Chatbot...")
-        break
-    initial_state = {"conversations": [HumanMessage(content=user_message)]}
-    config={"configurable":{"thread_id":thread_id}}  # This is for persistance 
-    output = chatbot_workflow.invoke(initial_state,config=config)
-    print("AI : ",output["conversations"][-1].content)
