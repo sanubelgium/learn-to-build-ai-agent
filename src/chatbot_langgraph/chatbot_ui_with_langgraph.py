@@ -26,9 +26,12 @@ if user_query:
         st.write(user_query)
 
     initial_state = {"conversations": [HumanMessage(content=user_query)]}
-    response = chatbot_workflow.invoke(initial_state,config=CONFIG_DICT)
-    ai_response=response["conversations"][-1].content
-    
-    st.session_state['chat_history'].append({"role": "assistant", "content": ai_response})
     with st.chat_message("assistant"):
-        st.write(ai_response)
+        ai_messages = st.write_stream(
+            message_chunk.content for message_chunk,metadata in chatbot_workflow.stream(
+                initial_state,
+                config=CONFIG_DICT,
+                stream_mode="messages"
+            ) 
+        )
+    st.session_state['chat_history'].append({"role": "assistant", "content": ai_messages})
