@@ -15,6 +15,7 @@ class Message(BaseModel):
 class RequestState(BaseModel):
     messages: List[Message]
     allow_search: bool
+    session_id: str  # identifies which conversation this belongs to
 
 class ResponseState(BaseModel):
     response: str
@@ -25,12 +26,13 @@ app=FastAPI(title="LangGraph AI Agent")
 #API Endpoint to interact with the Chatbot 
 @app.post("/chat", response_model=ResponseState)
 def chat_endpoint(request: RequestState): 
-    print("API called :")
+    print(f"API called : [session={request.session_id}]")
     messages = request.messages
     allow_search = request.allow_search
+    session_id = request.session_id
 
     # Call AI Agent and Get the final Response 
-    response=get_response_from_groq_agent(messages, allow_search)
+    response=get_response_from_groq_agent(messages, allow_search, session_id)
     print("API response :", response)
     return ResponseState(response=response)
 

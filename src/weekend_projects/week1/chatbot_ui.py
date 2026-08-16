@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import uuid
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -12,10 +13,18 @@ st.set_page_config(
 
 allow_web_search = st.sidebar.checkbox("Allow Web Search", value=False)
 
+# One session_id per browser session, persisted for the lifetime of the tab.
+# This is what lets the backend keep each visitor's conversation isolated —
+# see chatbot_agent.py's get_response_from_groq_agent(session_id=...).
+if "session_id" not in st.session_state:
+    st.session_state.session_id = str(uuid.uuid4())
 
 # Add a clear chat button in sidebar
 if st.sidebar.button("Clear Chat History"):
     st.session_state.messages = []
+    # Clearing chat starts a fresh conversation, so rotate the session_id too
+    # — otherwise the backend's history for the old id just sits there unused.
+    st.session_state.session_id = str(uuid.uuid4())
     st.rerun()
 
 st.title("AI Chatbot Agent")
@@ -46,7 +55,8 @@ if user_query := st.chat_input("Ask me anything right now"):
         with st.spinner("Thinking..."):
             payload = {
                 "messages": st.session_state.messages,
-                "allow_search": allow_web_search
+                "allow_search": allow_web_search,
+                "session_id": st.session_state.session_id
             }
             try:
                 response = requests.post(API_URL, json=payload)
@@ -63,6 +73,3 @@ if user_query := st.chat_input("Ask me anything right now"):
                     st.error(f"Error {response.status_code}: Could not get response.")
             except Exception as e:
                 st.error(f"Could not connect to backend server: {e}")
-
-
-

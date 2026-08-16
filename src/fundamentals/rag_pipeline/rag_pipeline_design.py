@@ -27,7 +27,7 @@ def rag_pipeline_design(query):
     collection = client.get_or_create_collection(COLLECTION_NAME)
     ###Embeddings model
     embeddings = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-mpnet-base-v2",
+        model_name=EMBEDDING_MODEL ,
         encode_kwargs={"normalize_embeddings": True},
     )
     if collection.count() == 0:

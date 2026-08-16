@@ -10,10 +10,10 @@ if "CHATBOT_API_KEY" in os.environ:
     os.environ["GROQ_API_KEY"] = os.environ["CHATBOT_API_KEY"]
 
 # Initialize the LLM
-    groq_llm = ChatGroq(
-        model="llama-3.3-70b-versatile",
-        temperature=0
-    )
+groq_llm = ChatGroq(
+    model="llama-3.3-70b-versatile",
+    temperature=0
+)
 
 #Define the workflow state
 class SimpleSequentialGraphState(TypedDict):

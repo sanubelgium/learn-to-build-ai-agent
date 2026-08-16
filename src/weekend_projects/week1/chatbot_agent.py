@@ -26,6 +26,11 @@ groq_llm = ChatGroq(
 )
 
 #Memory setup
+# Keyed by session_id, so concurrent sessions no longer collide.
+# NOTE: still in-process memory — fine for a single `uvicorn` worker demo,
+# but it resets on restart and won't be shared across multiple workers/
+# processes. For that, swap these for a persistent store (SQLite/Redis),
+# same idea as chatbot_in_langgraph_with_database.py's SqliteSaver.
 store={}
 long_term_store={}
 
@@ -228,7 +233,21 @@ Always optimize for factual correctness, transparency, and user usefulness.
 """
 
 #Tools Setup
-def get_response_from_groq_agent(messages, allow_search):
+def get_response_from_groq_agent(messages, allow_search, session_id: str):
+    """
+    Args:
+        messages: full chat history for this session, as sent by the client
+                  (list of dicts/BaseMessage-like objects with role + content)
+        allow_search: whether the agent is allowed to use the web search tool
+        session_id: caller-supplied id identifying which conversation this is.
+                    Required — each session gets its own isolated history in
+                    `store`/`long_term_store`, so concurrent users (or
+                    concurrent tabs/threads for the same user) never see or
+                    overwrite each other's chat state.
+    """
+    if not session_id:
+        raise ValueError("session_id is required")
+
     formatted_messages = []
     for msg in messages:
         role = msg.role if hasattr(msg, "role") else msg["role"]
@@ -239,10 +258,12 @@ def get_response_from_groq_agent(messages, allow_search):
         return ""
         
     question = formatted_messages[-1][1]
-    print("Inside Agent method------------> Latest query:", question)
+    print(f"Inside Agent method------------> [session={session_id}] Latest query:", question)
 
-    # Setup session history 
-    session_id = "0123456789"
+    # Setup session history for THIS session only. We rebuild it from the
+    # messages the client sent (rather than trusting whatever's already in
+    # `store`), so the client's view of history stays the source of truth —
+    # but we no longer touch any other session's history.
     history = get_session_history(session_id)
     history.clear()
     
@@ -282,7 +303,7 @@ def get_response_from_groq_agent(messages, allow_search):
         
     messages_out = response.get("messages")
     ai_messages = [message.content for message in messages_out if isinstance(message, AIMessage)]
-    print("\nLong-term Memory:")
+    print(f"\nLong-term Memory [session={session_id}]:")
     print(get_long_term_memory(session_id))
     reply = ai_messages[-1]
     return reply
