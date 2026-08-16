@@ -220,26 +220,3 @@ project are all self-contained and can be run without ever running
 `ingestion.py`.
 
 ---
-
-## Known gaps to be aware of when reading/running this repo
-
-- `requirements.txt` predates several imports actually used in `src/`
-  (`langchain-groq`, `langchain-huggingface`, `langchain-chroma`,
-  `langgraph-checkpoint-sqlite`, `langchain-mcp-adapters`, `langsmith`,
-  `mcp`, `langchain-tavily` are all imported somewhere but not listed).
-- `generate.py` calls Ollama with `config.settings.MODEL`, which is set to a
-  Groq model id (`llama-3.3-70b-versatile`) — that constant is shared across
-  both the Ollama and Groq code paths even though the two need different
-  model names.
-- `rag_pipeline_design.py` hardcodes `"sentence-transformers/all-mpnet-base-v2"`
-  instead of importing `EMBEDDING_MODEL` from `config.settings`
-  (`all-MiniLM-L6-v2`) — if it's ever pointed at the same `DB_DIR`/
-  `COLLECTION_NAME` as the `fundamentals/` scripts, the two embedding
-  dimensions would collide in one Chroma collection.
-- Most scripts add the project root to `sys.path` manually
-  (`sys.path.append(...)`) instead of the repo being an installable package;
-  a `pyproject.toml` + `pip install -e .` would remove this across the board.
-
-None of the above block reading or understanding the code — they're the
-first things worth fixing if this repo moves from "learning project" to
-"something other people run."
