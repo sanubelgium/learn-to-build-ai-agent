@@ -6,7 +6,7 @@
     "description": "Evaluation dataset for the RAG pipeline built on the Union Budget Speech 2026-2027 PDF[cite: 1]. Each entry contains a category, difficulty, question, ground-truth answer, and context reference placeholders to test RAG retrieval and generation capabilities.",
     "pipeline_config": {
       "embedding_model": "sentence-transformers/all-mpnet-base-v2",
-      "llm_model": "llama-3.3-70b-versatile",
+      "llm_model": "openai/gpt-oss-120b",
       "chunk_size": 1000,
       "chunk_overlap": 150,
       "collection_name": "my_first_collection",

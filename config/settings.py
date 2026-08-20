@@ -11,7 +11,7 @@ EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 DATASET_JSON = PROJECT_ROOT / "data" / "evaluation_dataset" / "rag_test_dataset.json"
 LANGSMITH_DATASET_NAME = "rag-budget-speech-eval-v1.1"
 TOP_K = 4
-MODEL = "llama-3.3-70b-versatile"
+MODEL = "openai/gpt-oss-120b"
 MAX_TOKENS = 1000
 SYSTEM_PROMPT = (
     "You are a helpful assistant that answers questions using only the "

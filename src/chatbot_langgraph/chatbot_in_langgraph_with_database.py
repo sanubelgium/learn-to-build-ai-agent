@@ -17,7 +17,7 @@ if "CHATBOT_API_KEY" in os.environ:
 
 # Initialize the LLM
 chat_model = ChatGroq(
-    model="llama-3.3-70b-versatile",
+    model="openai/gpt-oss-120b",
     temperature=0.8
 )
 #state

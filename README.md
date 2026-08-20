@@ -62,7 +62,7 @@ RAG pipeline, designed to be read in order.
 
 **`rag_pipeline/rag_pipeline_design.py`** — a self-contained, dependency-light
 rewrite of the same pipeline using the raw `chromadb` client instead of
-`langchain-chroma`, plus **Groq** (`llama-3.3-70b-versatile`) instead of
+`langchain-chroma`, plus **Groq** (`openai/gpt-oss-120b`) instead of
 Ollama for generation. It auto-skips re-ingestion if the collection is
 already populated. This is the version imported by the evaluation harness
 (`tests/evaluations/rag_target.py`), which is why it lives in its own

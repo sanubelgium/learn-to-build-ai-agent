@@ -40,7 +40,7 @@ from config.settings import LANGSMITH_DATASET_NAME
 from src.fundamentals.evaluations.rag_target import rag_target
 
 # Judge LLM
-judge_llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
+judge_llm = ChatGroq(model="openai/gpt-oss-120b", temperature=0)
 
 
 # Helper: call judge LLM and parse score + reason
@@ -245,7 +245,7 @@ def run_evaluation(
         metadata={
             "pipeline": "rag_pipeline_design.py",
             "embedding_model": "sentence-transformers/all-mpnet-base-v2",
-            "llm": "llama-3.3-70b-versatile",
+            "llm": "openai/gpt-oss-120b",
             "vector_store": "chromadb",
         },
     )
